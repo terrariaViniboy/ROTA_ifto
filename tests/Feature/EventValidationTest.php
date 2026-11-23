@@ -12,7 +12,8 @@ class EventValidationTest extends TestCase
 
     public function test_store_requires_every_event_field(): void
     {
-        $response = $this->from(route('events.create'))
+        $response = $this->actingAsAdmin()
+            ->from(route('events.create'))
             ->post(route('events.store'), []);
 
         $response->assertRedirect(route('events.create'));
@@ -29,7 +30,7 @@ class EventValidationTest extends TestCase
 
     public function test_store_rejects_end_date_before_start_date(): void
     {
-        $response = $this->post(route('events.store'), $this->payload([
+        $response = $this->actingAsAdmin()->post(route('events.store'), $this->payload([
             'start_date' => '2026-11-22',
             'end_date' => '2026-11-20',
         ]));
@@ -40,7 +41,7 @@ class EventValidationTest extends TestCase
 
     public function test_store_accepts_end_date_equal_to_start_date(): void
     {
-        $response = $this->post(route('events.store'), $this->payload([
+        $response = $this->actingAsAdmin()->post(route('events.store'), $this->payload([
             'name' => 'Oficina de um dia',
             'start_date' => '2026-11-20',
             'end_date' => '2026-11-20',
@@ -59,7 +60,7 @@ class EventValidationTest extends TestCase
             'is_active' => true,
         ]));
 
-        $response = $this->put(route('events.update', $event), $this->payload([
+        $response = $this->actingAsAdmin()->put(route('events.update', $event), $this->payload([
             'start_date' => '2026-12-10',
             'end_date' => '2026-12-01',
         ]));

@@ -5,7 +5,9 @@
 @section('content')
     <div class="page-head">
         <h1 class="page-title">Eventos</h1>
-        <a href="{{ route('events.create') }}" class="button">Novo evento</a>
+        @if ($isAdmin)
+            <a href="{{ route('events.create') }}" class="button">Novo evento</a>
+        @endif
     </div>
 
     @if ($events->isEmpty())
@@ -22,12 +24,14 @@
                     <p class="muted">{{ $event->is_active ? 'Ativo' : 'Inativo' }} · {{ $event->establishments_count }} estabelecimentos</p>
                     <div class="card-actions">
                         <a href="{{ route('events.guide', $event) }}" class="button button--outline">Guia</a>
-                        <a href="{{ route('events.edit', $event) }}" class="button button--outline">Editar</a>
-                        <form method="POST" action="{{ route('events.destroy', $event) }}">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="button button--danger">Excluir</button>
-                        </form>
+                        @if ($isAdmin)
+                            <a href="{{ route('events.edit', $event) }}" class="button button--outline">Editar</a>
+                            <form method="POST" action="{{ route('events.destroy', $event) }}">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="button button--danger">Excluir</button>
+                            </form>
+                        @endif
                     </div>
                 </li>
             @endforeach

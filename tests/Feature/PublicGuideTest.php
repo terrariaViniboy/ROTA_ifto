@@ -92,7 +92,7 @@ class PublicGuideTest extends TestCase
         $response->assertSee('Abrir Rota no Maps');
         $response->assertSee('https://wa.me/5563911112222', false);
         $response->assertSee(htmlspecialchars($hotel->googleMapsUrl(), ENT_QUOTES), false);
-        $response->assertSee('bg-red-600', false);
+        $response->assertSee('pill--alert', false);
         $response->assertSee('/eventos/'.$event->id.'/guia?category=emergencia', false);
     }
 

@@ -4,6 +4,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>@yield('title', 'Rota IFTO')</title>
+        @stack('meta')
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600,700" rel="stylesheet" />
         <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -20,13 +21,19 @@
             <div class="site-header-shapes" aria-hidden="true"></div>
             <div class="site-header-inner">
                 <a class="brand" href="{{ route('home') }}">
-                    <img class="brand-logo" src="{{ asset('images/logo-rota-ifto.jpg') }}" alt="" width="52" height="52">
-                    <span class="brand-name">Rota IFTO</span>
+                    <img class="brand-logo" src="{{ asset('images/logo-rota-ifto.png') }}" alt="" width="52" height="52">
+                    <span class="visually-hidden">Rota IFTO</span>
                 </a>
                 <nav class="site-nav" aria-label="Seções">
                     <a href="{{ route('home') }}" @if (request()->routeIs('home')) aria-current="page" @endif>Início</a>
-                    <a href="{{ route('events.index') }}" @if (request()->routeIs('events.*')) aria-current="page" @endif>Eventos</a>
-                    <a href="{{ route('establishments.index') }}" @if (request()->routeIs('establishments.*')) aria-current="page" @endif>Estabelecimentos</a>
+                    <a href="{{ route('events.index') }}" @if (request()->routeIs('events.index', 'events.show', 'events.guide')) aria-current="page" @endif>Eventos</a>
+                    <a href="{{ route('establishments.index') }}" @if (request()->routeIs('establishments.index', 'establishments.show')) aria-current="page" @endif>Estabelecimentos</a>
+                    @if ($isAdmin)
+                        <form method="post" action="{{ route('admin.logout') }}" class="site-nav-logout">
+                            @csrf
+                            <button type="submit">Sair</button>
+                        </form>
+                    @endif
                 </nav>
             </div>
             <div class="site-header-accent" aria-hidden="true"></div>

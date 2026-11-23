@@ -23,7 +23,7 @@ class EventCrudTest extends TestCase
 
     public function test_store_persists_a_valid_event_and_redirects(): void
     {
-        $response = $this->post(route('events.store'), $this->payload());
+        $response = $this->actingAsAdmin()->post(route('events.store'), $this->payload());
 
         $response->assertStatus(302);
         $this->assertDatabaseHas('events', [
@@ -43,7 +43,7 @@ class EventCrudTest extends TestCase
     {
         $event = Event::query()->create($this->record());
 
-        $response = $this->put(route('events.update', $event), $this->payload([
+        $response = $this->actingAsAdmin()->put(route('events.update', $event), $this->payload([
             'name' => 'JIFTO Atualizado',
             'city' => 'Paraíso',
         ]));
@@ -65,7 +65,7 @@ class EventCrudTest extends TestCase
     {
         $event = Event::query()->create($this->record());
 
-        $response = $this->delete(route('events.destroy', $event));
+        $response = $this->actingAsAdmin()->delete(route('events.destroy', $event));
 
         $response->assertStatus(302);
         $response->assertRedirect(route('events.index'));
@@ -112,7 +112,7 @@ class EventCrudTest extends TestCase
 
     public function test_store_rejects_an_empty_payload(): void
     {
-        $response = $this->post(route('events.store'), []);
+        $response = $this->actingAsAdmin()->post(route('events.store'), []);
 
         $response->assertStatus(302);
         $response->assertSessionHasErrors(['name', 'city', 'start_date', 'end_date', 'location_address', 'is_active']);
@@ -124,7 +124,7 @@ class EventCrudTest extends TestCase
 
     public function test_store_rejects_an_end_date_before_the_start_date(): void
     {
-        $response = $this->post(route('events.store'), $this->payload([
+        $response = $this->actingAsAdmin()->post(route('events.store'), $this->payload([
             'start_date' => '2026-11-22',
             'end_date' => '2026-11-20',
         ]));

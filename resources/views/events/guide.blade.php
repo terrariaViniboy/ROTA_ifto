@@ -27,7 +27,13 @@
 
     <div class="search with-space">
         <label class="visually-hidden" for="busca-guia">Buscar no guia</label>
-        <input id="busca-guia" type="search" placeholder="Buscar: pizza, farmácia, táxi…" autocomplete="off">
+        <input
+            id="busca-guia"
+            type="search"
+            placeholder="Buscar: pizza, farmácia, táxi…"
+            autocomplete="off"
+            @if ($establishments->isEmpty()) disabled @endif
+        >
     </div>
 
     <nav class="pill-row" aria-label="Filtrar por categoria">
@@ -50,9 +56,27 @@
             <x-empty-state message="Nenhum lugar nesta categoria ainda." />
         </div>
     @else
-        <ul class="card-list with-space">
+        <div id="guia-busca-vazia" class="with-space" hidden>
+            <x-empty-state message="Nenhum lugar encontrado para essa busca." />
+        </div>
+        <ul id="guia-lista" class="card-list with-space">
             @foreach ($establishments as $establishment)
-                <li class="card card--{{ $establishment->category }}">
+                @php
+                    $busca = \Illuminate\Support\Str::lower(\Illuminate\Support\Str::ascii(
+                        implode(' ', [
+                            $establishment->name,
+                            $establishment->address,
+                            $establishment->categoryLabel(),
+                            $establishment->code,
+                            $establishment->statusLabel(),
+                        ])
+                    ));
+                @endphp
+                <li
+                    class="card card--{{ $establishment->category }}"
+                    data-guia-item
+                    data-search="{{ $busca }}"
+                >
                     <div>
                         <p class="card-kicker">{{ $establishment->categoryLabel() }}</p>
                         <h2 class="card-title">

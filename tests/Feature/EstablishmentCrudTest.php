@@ -26,7 +26,7 @@ class EstablishmentCrudTest extends TestCase
     {
         $event = $this->event();
 
-        $response = $this->post(route('establishments.store'), $this->payload($event));
+        $response = $this->actingAsAdmin()->post(route('establishments.store'), $this->payload($event));
 
         $response->assertStatus(302);
         $this->assertDatabaseHas('establishments', [
@@ -48,7 +48,7 @@ class EstablishmentCrudTest extends TestCase
         $event = $this->event();
         $establishment = Establishment::query()->create($this->record($event));
 
-        $response = $this->put(route('establishments.update', $establishment), $this->payload($event, [
+        $response = $this->actingAsAdmin()->put(route('establishments.update', $establishment), $this->payload($event, [
             'name' => 'Hotel Atualizado',
             'code' => 'HOT-01',
             'status' => 'lotado',
@@ -73,7 +73,7 @@ class EstablishmentCrudTest extends TestCase
         $event = $this->event();
         $establishment = Establishment::query()->create($this->record($event));
 
-        $response = $this->delete(route('establishments.destroy', $establishment));
+        $response = $this->actingAsAdmin()->delete(route('establishments.destroy', $establishment));
 
         $response->assertStatus(302);
         $response->assertRedirect(route('establishments.index'));
@@ -85,7 +85,7 @@ class EstablishmentCrudTest extends TestCase
 
     public function test_store_rejects_an_empty_payload(): void
     {
-        $response = $this->post(route('establishments.store'), []);
+        $response = $this->actingAsAdmin()->post(route('establishments.store'), []);
 
         $response->assertStatus(302);
         $response->assertSessionHasErrors(['name', 'code', 'category', 'status']);
@@ -97,7 +97,7 @@ class EstablishmentCrudTest extends TestCase
         $event = $this->event();
         Establishment::query()->create($this->record($event, ['code' => 'HOT-01']));
 
-        $response = $this->post(route('establishments.store'), $this->payload($event, [
+        $response = $this->actingAsAdmin()->post(route('establishments.store'), $this->payload($event, [
             'name' => 'Outro Hotel',
             'code' => 'HOT-01',
         ]));
@@ -113,7 +113,7 @@ class EstablishmentCrudTest extends TestCase
     {
         $event = $this->event();
 
-        $response = $this->post(route('establishments.store'), $this->payload($event, [
+        $response = $this->actingAsAdmin()->post(route('establishments.store'), $this->payload($event, [
             'name' => 'Local Inválido',
             'code' => 'INV-01',
             'category' => 'lazer',

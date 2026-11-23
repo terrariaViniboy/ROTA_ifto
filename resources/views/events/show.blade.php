@@ -29,12 +29,14 @@
         </dl>
         <div class="card-actions">
             <a href="{{ route('events.guide', $event) }}" class="button">Abrir guia</a>
-            <a href="{{ route('events.edit', $event) }}" class="button button--outline">Editar</a>
-            <form method="POST" action="{{ route('events.destroy', $event) }}">
-                @csrf
-                @method('DELETE')
-                <button type="submit" class="button button--danger">Excluir</button>
-            </form>
+            @if ($isAdmin)
+                <a href="{{ route('events.edit', $event) }}" class="button button--outline">Editar</a>
+                <form method="POST" action="{{ route('events.destroy', $event) }}">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="button button--danger">Excluir</button>
+                </form>
+            @endif
         </div>
     </article>
 @endsection

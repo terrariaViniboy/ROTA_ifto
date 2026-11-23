@@ -5,7 +5,9 @@
 @section('content')
     <div class="page-head">
         <h1 class="page-title">Estabelecimentos</h1>
-        <a href="{{ route('establishments.create') }}" class="button">Novo estabelecimento</a>
+        @if ($isAdmin)
+            <a href="{{ route('establishments.create') }}" class="button">Novo estabelecimento</a>
+        @endif
     </div>
 
     <div class="search">
@@ -51,12 +53,14 @@
                                         <a href="{{ $establishment->whatsappUrl() }}" class="button" target="_blank" rel="noopener noreferrer">Chamar no WhatsApp</a>
                                     @endif
                                     <a href="{{ $establishment->googleMapsUrl() }}" class="button button--outline" target="_blank" rel="noopener noreferrer">Abrir Rota no Maps</a>
-                                    <a href="{{ route('establishments.edit', $establishment) }}" class="button button--outline">Editar</a>
-                                    <form method="POST" action="{{ route('establishments.destroy', $establishment) }}">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="button button--danger">Excluir</button>
-                                    </form>
+                                    @if ($isAdmin)
+                                        <a href="{{ route('establishments.edit', $establishment) }}" class="button button--outline">Editar</a>
+                                        <form method="POST" action="{{ route('establishments.destroy', $establishment) }}">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="button button--danger">Excluir</button>
+                                        </form>
+                                    @endif
                                 </div>
                             </article>
                         @endforeach

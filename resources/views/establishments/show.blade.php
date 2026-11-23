@@ -45,12 +45,14 @@
         </div>
     </article>
 
-    <div class="card-actions">
-        <a href="{{ route('establishments.edit', $establishment) }}" class="button button--outline">Editar</a>
-        <form method="POST" action="{{ route('establishments.destroy', $establishment) }}">
-            @csrf
-            @method('DELETE')
-            <button type="submit" class="button button--danger">Excluir</button>
-        </form>
-    </div>
+    @if ($isAdmin)
+        <div class="card-actions">
+            <a href="{{ route('establishments.edit', $establishment) }}" class="button button--outline">Editar</a>
+            <form method="POST" action="{{ route('establishments.destroy', $establishment) }}">
+                @csrf
+                @method('DELETE')
+                <button type="submit" class="button button--danger">Excluir</button>
+            </form>
+        </div>
+    @endif
 @endsection

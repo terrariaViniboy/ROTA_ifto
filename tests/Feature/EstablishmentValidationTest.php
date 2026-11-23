@@ -13,7 +13,8 @@ class EstablishmentValidationTest extends TestCase
 
     public function test_store_validates_required_rules(): void
     {
-        $response = $this->from(route('establishments.create'))
+        $response = $this->actingAsAdmin()
+            ->from(route('establishments.create'))
             ->post(route('establishments.store'), []);
 
         $response->assertRedirect(route('establishments.create'));
@@ -33,7 +34,7 @@ class EstablishmentValidationTest extends TestCase
     {
         $event = $this->event();
 
-        $response = $this->post(route('establishments.store'), $this->payload($event, [
+        $response = $this->actingAsAdmin()->post(route('establishments.store'), $this->payload($event, [
             'event_id' => 9999,
             'category' => 'lazer',
             'status' => 'fechado',
@@ -53,7 +54,7 @@ class EstablishmentValidationTest extends TestCase
         $event = $this->event();
         $this->establishment($event, ['code' => 'HOT-01']);
 
-        $response = $this->post(route('establishments.store'), $this->payload($event, [
+        $response = $this->actingAsAdmin()->post(route('establishments.store'), $this->payload($event, [
             'code' => 'HOT-01',
             'name' => 'Outro Hotel',
         ]));
@@ -68,7 +69,7 @@ class EstablishmentValidationTest extends TestCase
         $current = $this->establishment($event, ['code' => 'HOT-01', 'name' => 'Hotel Atual']);
         $this->establishment($event, ['code' => 'REST-02', 'name' => 'Restaurante']);
 
-        $keepOwnCode = $this->put(route('establishments.update', $current), $this->payload($event, [
+        $keepOwnCode = $this->actingAsAdmin()->put(route('establishments.update', $current), $this->payload($event, [
             'code' => 'HOT-01',
             'name' => 'Hotel Atualizado',
         ]));
@@ -80,7 +81,7 @@ class EstablishmentValidationTest extends TestCase
             'code' => 'HOT-01',
         ]);
 
-        $takeOtherCode = $this->put(route('establishments.update', $current), $this->payload($event, [
+        $takeOtherCode = $this->actingAsAdmin()->put(route('establishments.update', $current), $this->payload($event, [
             'code' => 'REST-02',
         ]));
 
@@ -95,7 +96,7 @@ class EstablishmentValidationTest extends TestCase
     {
         $event = $this->event();
 
-        $response = $this->post(route('establishments.store'), $this->payload($event));
+        $response = $this->actingAsAdmin()->post(route('establishments.store'), $this->payload($event));
 
         $response->assertSessionHasNoErrors();
         $this->assertDatabaseHas('establishments', [

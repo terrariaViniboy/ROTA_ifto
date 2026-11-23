@@ -18,6 +18,7 @@ Guia do participante para eventos do IFTO: centraliza hospedagem, alimentação,
 - [Estrutura de pastas](#estrutura-de-pastas)
 - [Como rodar o projeto](#como-rodar-o-projeto)
 - [Como usar](#como-usar)
+- [Área administrativa](#área-administrativa)
 - [Roadmap](#roadmap)
 - [Como contribuir](#como-contribuir)
 - [Licença](#licença)
@@ -27,7 +28,7 @@ Guia do participante para eventos do IFTO: centraliza hospedagem, alimentação,
 
 Em eventos do Instituto Federal do Tocantins (IFTO), participantes e equipes precisam achar rápido onde dormir, comer, se locomover e buscar ajuda na cidade. Hoje essa informação costuma ficar espalhada em mensagens, planilhas e links soltos.
 
-O **Rota IFTO** concentra esses dados por evento: a pessoa abre o guia, filtra por categoria e chega ao WhatsApp ou ao mapa do lugar. Quem organiza cadastra eventos e estabelecimentos pelo próprio site.
+O **Rota IFTO** concentra esses dados por evento: a pessoa abre o guia, filtra por categoria e chega ao WhatsApp ou ao mapa do lugar. Visitantes só visualizam. Quem organiza entra na área administrativa para cadastrar, editar e excluir.
 
 Repositório: [https://github.com/terrariaViniboy/ROTA_ifto](https://github.com/terrariaViniboy/ROTA_ifto)
 
@@ -35,14 +36,25 @@ Repositório: [https://github.com/terrariaViniboy/ROTA_ifto](https://github.com/
 
 O que já existe no código hoje:
 
-- **Início** — lista apenas os eventos marcados como ativos
-- **Eventos** — cadastrar, listar, ver, editar e excluir (nome, cidade, período, endereço e situação)
-- **Guia do evento** — lugares ligados ao evento, com filtro por categoria (`hospedagem`, `alimentacao`, `transporte`, `emergencia`)
-- **Estabelecimentos** — cadastrar, listar, ver, editar e excluir, com código único, situação (ativo, lotado ou inativo), capacidade, faixa de preço, WhatsApp e link do Maps
-- **Atalhos** — abrir WhatsApp (`wa.me`) e rota no Google Maps (link informado ou busca pelo endereço)
-- **Testes automatizados** — CRUD e validação de eventos e estabelecimentos, além do guia público
+**Para qualquer visitante**
 
-> O campo de busca nas telas do guia e da lista de estabelecimentos é só visual: ainda **não filtra** resultados.
+- **Início** — lista apenas os eventos marcados como ativos
+- **Eventos e estabelecimentos** — listar e ver detalhes (sem criar, editar ou excluir)
+- **Guia do evento** — lugares ligados ao evento, com filtro por categoria (`hospedagem`, `alimentacao`, `transporte`, `emergencia`)
+- **Busca no guia** — filtra os cartões enquanto você digita (nome, endereço, categoria e código)
+- **Atalhos** — abrir WhatsApp (`wa.me`) e rota no Google Maps (link informado ou busca pelo endereço)
+
+**Para o administrador (após login)**
+
+- Cadastrar, editar e excluir eventos e estabelecimentos
+- Botão **Sair** no menu
+- Proteção no servidor: rotas de escrita ficam sob `/admin/...` e exigem sessão de admin
+
+**Outros**
+
+- **Testes automatizados** — guia público, CRUD, validação e bloqueio de visitante
+
+> O campo de busca na lista geral de estabelecimentos ainda é só visual.
 
 ## Demonstração
 
@@ -75,18 +87,20 @@ Node.js: o Vite 7 exige `^20.19.0` ou `>=22.12.0` (conforme `engines` do pacote 
 ```text
 ROTA_ifto/
 ├── app/
-│   ├── Http/Controllers/   # Início, eventos e estabelecimentos
+│   ├── Http/Controllers/   # Site público e Admin (login)
+│   ├── Http/Middleware/    # Verificação de admin
 │   └── Models/             # Event, Establishment e User
+├── config/admin.php        # Lê ADMIN_USER e ADMIN_PASSWORD do .env
 ├── database/
 │   ├── migrations/         # Tabelas do app e do Laravel
 │   └── seeders/            # Seeder padrão (usuário de teste)
 ├── public/                 # Entrada HTTP e assets públicos
 ├── resources/
 │   ├── css/                # Estilos (Tailwind + CSS do guia)
-│   ├── js/                 # Entrada Vite / Axios
-│   └── views/              # Telas Blade
-├── routes/web.php          # Rotas do site
-└── tests/Feature/          # Testes do guia e dos cadastros
+│   ├── js/                 # Entrada Vite / busca do guia
+│   └── views/              # Telas Blade (site e admin)
+├── routes/web.php          # Rotas públicas e /admin
+└── tests/Feature/          # Testes do guia, cadastros e proteção
 ```
 
 ## Como rodar o projeto
@@ -221,22 +235,44 @@ Os testes usam SQLite em memória (`phpunit.xml`).
 ### Observações
 
 - `composer run setup` instala dependências, copia `.env` se faltar, gera a chave, roda `migrate --force`, instala o npm e faz `npm run build`. Ainda assim é preciso configurar o banco no `.env` **antes** do migrate, se não for o padrão esperado na sua máquina.
-- O seeder padrão (`php artisan db:seed`) cria apenas um usuário de teste. **Não** popula eventos nem estabelecimentos. Não há tela de login neste protótipo.
+- O seeder padrão (`php artisan db:seed`) cria apenas um usuário de teste do Laravel. **Não** popula eventos nem estabelecimentos e **não** é o login do admin do Rota IFTO.
 - Não versionamos `.env` nem arquivos `*.sqlite*`.
 
 ## Como usar
 
-1. Em **Eventos**, cadastre um evento e marque-o como ativo.
-2. Em **Estabelecimentos**, vincule lugares ao evento (categoria, código, endereço, situação; WhatsApp e Maps são opcionais).
-3. No **Início**, abra o guia do evento ativo — ou use o link **Guia** na lista de eventos.
-4. No guia, filtre por categoria e use **Chamar no WhatsApp** ou **Abrir Rota no Maps** quando os dados estiverem preenchidos.
+**Visitante**
+
+1. No **Início**, abra o guia de um evento ativo — ou use **Guia** na lista de eventos.
+2. No guia, filtre por categoria, use a busca e os atalhos de WhatsApp / Maps.
+
+**Administrador**
+
+1. Acesse `/admin` (não há link no menu público; digite a URL).
+2. Entre com o usuário e a senha definidos no seu `.env`.
+3. Cadastre eventos e estabelecimentos; use **Sair** quando terminar.
+
+## Área administrativa
+
+- Login em **`/admin`**. Depois do login, o painel fica em `/admin/painel`.
+- Criar, editar e excluir ficam sob rotas `/admin/events/...` e `/admin/establishments/...`, protegidas no servidor.
+- Credenciais **somente** no `.env` (nunca no código nem no GitHub):
+
+```env
+ADMIN_USER=admin
+ADMIN_PASSWORD=troque-esta-senha
+```
+
+Use valores próprios no `.env` local. O `.env.example` traz apenas exemplos genéricos.
+- A sessão de admin usa o cookie de sessão do Laravel (HttpOnly) e expira conforme `SESSION_LIFETIME` (padrão 120 minutos).
+- Há limite de tentativas no login e CSRF nos formulários. A página de login tem `noindex`.
 
 ## Roadmap
 
 Ideias para as próximas versões (ainda não implementadas):
 
-- [ ] Página **ADM** para cadastrar e gerenciar eventos e estabelecimentos
-- [ ] Busca real nos campos de pesquisa do guia e da lista de estabelecimentos
+- [x] Área administrativa com login e proteção das rotas de escrita
+- [x] Busca em tempo real no guia do evento
+- [ ] Busca real na lista geral de estabelecimentos
 - [ ] Melhorias de formulários e acessibilidade nas telas de cadastro
 - [ ] Dados de demonstração (seed) opcionais para quem for testar o guia
 
