@@ -16,38 +16,38 @@
   Cards, botões e formulários entram nas próximas etapas.
 */
 :root {
-    --color-ifto-green: #0b6b3a;
-    --color-ifto-green-dark: #084e2b;
-    --color-ifto-red: #c8102e;
+    --color-ifto-green: #3fa14c;
+    --color-ifto-green-dark: #2d7a38;
+    --color-ifto-red: #cf3034;
 
-    --color-rose: #db9a98;
-    --color-rose-deep: #c98482;
-    --color-beige: #f6ede2;
-    --color-beige-deep: #ead9c6;
-    --color-teal: #3b8a8f;
-    --color-teal-deep: #2f6f74;
-    --color-indigo: #4b5393;
+    --color-rose: #3fa14c;
+    --color-rose-deep: #2d7a38;
+    --color-beige: #f3f6f1;
+    --color-beige-deep: #dce6d9;
+    --color-teal: #3fa14c;
+    --color-teal-deep: #2d7a38;
+    --color-indigo: #2f6b3a;
 
-    --color-category-green: #2f7d4a;
+    --color-category-green: #3fa14c;
     --color-category-mustard: #b8860b;
     --color-category-brown: #8c5a3c;
 
-    --color-text: #2c2a28;
-    --color-text-muted: #5e5954;
-    --color-background: #fbf8f4;
+    --color-text: #1f2420;
+    --color-text-muted: #4f5a52;
+    --color-background: #f7faf6;
     --color-surface: #ffffff;
-    --color-line: #e6dfd6;
+    --color-line: #d8e2d7;
 
-    --font-title: "Archivo", "Arial", "Helvetica Neue", sans-serif;
-    --font-ui: "Fredoka", "Trebuchet MS", sans-serif;
-    --font-text: "Source Sans 3", "Segoe UI", sans-serif;
+    --font-title: "Manrope", "Segoe UI", sans-serif;
+    --font-ui: "Manrope", "Segoe UI", sans-serif;
+    --font-text: "IBM Plex Sans", "Segoe UI", sans-serif;
 
     --radius-card: 1.375rem;
     --radius-control: 1rem;
     --radius-pill: 999px;
 
-    --shadow-soft: 0 8px 24px rgb(44 42 40 / 8%);
-    --shadow-button: 0 6px 16px rgb(219 154 152 / 40%);
+    --shadow-soft: 0 8px 24px rgb(31 36 32 / 8%);
+    --shadow-button: 0 6px 16px rgb(63 161 76 / 35%);
 
     --space-2xs: 0.25rem;
     --space-xs: 0.5rem;
@@ -60,7 +60,7 @@
     --leading-title: 1.15;
     --leading-text: 1.6;
 
-    --focus-ring: 0 0 0 3px rgb(59 138 143 / 45%);
+    --focus-ring: 0 0 0 3px rgb(63 161 76 / 45%);
 }
 
 *,
@@ -92,7 +92,7 @@ svg {
 }
 
 :focus-visible {
-    outline: 3px solid var(--color-teal);
+    outline: 3px solid var(--color-ifto-green);
     outline-offset: 3px;
 }
 
@@ -131,7 +131,7 @@ svg {
 
 .site-header {
     position: relative;
-    background: var(--color-ifto-green);
+    background: var(--color-ifto-green-dark);
     color: #fff;
 }
 
@@ -223,12 +223,14 @@ svg {
 }
 
 .site-nav a[aria-current="page"] {
-    background: var(--color-rose);
+    background: var(--color-ifto-green);
+    color: #fff;
     font-weight: 700;
 }
 
 .site-nav a[aria-current="page"]:hover {
-    background: var(--color-rose-deep);
+    background: var(--color-ifto-green-dark);
+    color: #fff;
 }
 
 .site-main {
@@ -296,8 +298,8 @@ svg {
     padding: 0.55rem 1.2rem;
     border: 2px solid transparent;
     border-radius: var(--radius-pill);
-    background: var(--color-rose);
-    color: var(--color-text);
+    background: var(--color-ifto-green);
+    color: #fff;
     box-shadow: var(--shadow-button);
     font-family: var(--font-ui);
     font-size: 1rem;
@@ -309,18 +311,19 @@ svg {
 }
 
 .button:hover {
-    background: var(--color-rose-deep);
+    background: var(--color-ifto-green-dark);
+    color: #fff;
 }
 
 .button--outline {
     background: transparent;
-    color: var(--color-teal-deep);
-    border-color: var(--color-teal);
+    color: var(--color-ifto-green-dark);
+    border-color: var(--color-ifto-green);
     box-shadow: none;
 }
 
 .button--outline:hover {
-    background: rgb(59 138 143 / 10%);
+    background: rgb(63 161 76 / 10%);
 }
 
 .button--danger {
@@ -331,7 +334,7 @@ svg {
 }
 
 .button--danger:hover {
-    background: rgb(200 16 46 / 8%);
+    background: rgb(207 48 52 / 8%);
 }
 
 .text-link {
@@ -367,12 +370,13 @@ svg {
 }
 
 .pill:hover {
-    border-color: var(--color-rose);
+    border-color: var(--color-ifto-green);
 }
 
 .pill[aria-current="true"] {
-    border-color: var(--color-rose);
-    background: var(--color-rose);
+    border-color: var(--color-ifto-green);
+    background: var(--color-ifto-green);
+    color: #fff;
     font-weight: 700;
 }
 
