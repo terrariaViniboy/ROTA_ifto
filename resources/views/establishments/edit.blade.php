@@ -77,6 +77,6 @@
             <input type="url" name="maps_url" value="{{ old('maps_url', $establishment->maps_url ?? '') }}" class="w-full rounded border px-3 py-2">
             @error('maps_url') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
         </div>
-        <button type="submit" class="rounded bg-emerald-950 px-4 py-2 text-sm font-medium text-white">Atualizar</button>
+        <button type="submit" class="button">Atualizar</button>
     </form>
 @endsection
