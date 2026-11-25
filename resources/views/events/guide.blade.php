@@ -51,6 +51,23 @@
         @endforeach
     </nav>
 
+    @if ($selectedCategory !== null && $availableSubcategories->isNotEmpty())
+        <nav class="pill-row with-space" aria-label="Filtrar por tipo">
+            <a
+                href="{{ route('events.guide', ['event' => $event, 'category' => $selectedCategory]) }}"
+                class="pill"
+                @if ($selectedSubcategory === null) aria-current="true" @endif
+            >Todos os tipos</a>
+            @foreach ($availableSubcategories as $sub)
+                <a
+                    href="{{ route('events.guide', ['event' => $event, 'category' => $selectedCategory, 'subcategory' => $sub]) }}"
+                    class="pill"
+                    @if ($selectedSubcategory === $sub) aria-current="true" @endif
+                >{{ $sub }}</a>
+            @endforeach
+        </nav>
+    @endif
+
     @if ($establishments->isEmpty())
         <div class="with-space">
             <x-empty-state message="Nenhum lugar nesta categoria ainda." />
@@ -63,13 +80,14 @@
             @foreach ($establishments as $establishment)
                 @php
                     $busca = \Illuminate\Support\Str::lower(\Illuminate\Support\Str::ascii(
-                        implode(' ', [
+                        implode(' ', array_filter([
                             $establishment->name,
                             $establishment->address,
                             $establishment->categoryLabel(),
+                            $establishment->subcategory,
                             $establishment->code,
                             $establishment->statusLabel(),
-                        ])
+                        ]))
                     ));
                 @endphp
                 <li
@@ -78,7 +96,9 @@
                     data-search="{{ $busca }}"
                 >
                     <div>
-                        <p class="card-kicker">{{ $establishment->categoryLabel() }}</p>
+                        <p class="card-kicker">
+                            {{ $establishment->categoryLabel() }}@if ($establishment->subcategory) · {{ $establishment->subcategory }}@endif
+                        </p>
                         <h2 class="card-title">
                             <a href="{{ route('establishments.show', $establishment) }}">{{ $establishment->name }}</a>
                         </h2>
@@ -90,11 +110,34 @@
                         <p class="badge">{{ $establishment->group_capacity }} vagas</p>
                     @endif
 
+                    @unless ($establishment->isMobilityApp())
+                        <div class="map-embed map-embed--card">
+                            <iframe
+                                src="{{ $establishment->googleMapsEmbedUrl() }}"
+                                title="Mapa de {{ $establishment->name }}"
+                                loading="lazy"
+                                referrerpolicy="no-referrer-when-downgrade"
+                            ></iframe>
+                        </div>
+                    @endunless
+
                     <div class="card-actions">
                         @if ($establishment->whatsappUrl())
                             <a href="{{ $establishment->whatsappUrl() }}" class="button" target="_blank" rel="noopener noreferrer">Chamar no WhatsApp</a>
                         @endif
-                        <a href="{{ $establishment->googleMapsUrl() }}" class="button button--outline" target="_blank" rel="noopener noreferrer">Abrir Rota no Maps</a>
+                        @if ($establishment->isMobilityApp())
+                            @if ($establishment->android_app_url)
+                                <a href="{{ $establishment->android_app_url }}" class="button" target="_blank" rel="noopener noreferrer">Google Play</a>
+                            @endif
+                            @if ($establishment->ios_app_url)
+                                <a href="{{ $establishment->ios_app_url }}" class="button button--outline" target="_blank" rel="noopener noreferrer">App Store</a>
+                            @endif
+                        @else
+                            <a href="{{ $establishment->googleMapsUrl() }}" class="button button--outline" target="_blank" rel="noopener noreferrer">Abrir Rota no Maps</a>
+                        @endif
+                        @if ($establishment->instagramUrl())
+                            <a href="{{ $establishment->instagramUrl() }}" class="button button--outline" target="_blank" rel="noopener noreferrer">Instagram</a>
+                        @endif
                     </div>
                 </li>
             @endforeach

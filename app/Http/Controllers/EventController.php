@@ -59,18 +59,42 @@ class EventController extends Controller
             ? $category
             : null;
 
+        $availableSubcategories = $selectedCategory !== null
+            ? $event->establishments()
+                ->where('category', $selectedCategory)
+                ->whereNotNull('subcategory')
+                ->where('subcategory', '!=', '')
+                ->distinct()
+                ->orderBy('subcategory')
+                ->pluck('subcategory')
+            : collect();
+
+        $subcategory = $request->query('subcategory');
+        $selectedSubcategory = is_string($subcategory) && $availableSubcategories->contains($subcategory)
+            ? $subcategory
+            : null;
+
         $establishments = $event->establishments()
             ->when(
                 $selectedCategory,
                 fn ($query) => $query->where('category', $selectedCategory),
             )
+            ->when(
+                $selectedSubcategory,
+                fn ($query) => $query->where('subcategory', $selectedSubcategory),
+            )
+            ->orderBy('subcategory')
             ->orderBy('name')
             ->get();
+
+        $establishments->each->setRelation('event', $event);
 
         return view('events.guide', [
             'event' => $event,
             'establishments' => $establishments,
             'selectedCategory' => $selectedCategory,
+            'availableSubcategories' => $availableSubcategories,
+            'selectedSubcategory' => $selectedSubcategory,
         ]);
     }
 

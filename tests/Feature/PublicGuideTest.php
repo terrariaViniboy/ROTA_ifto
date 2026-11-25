@@ -105,6 +105,7 @@ class PublicGuideTest extends TestCase
             'price_range' => 'R$ 80 a R$ 120',
             'phone_whatsapp' => '(63) 98400-1122',
             'maps_url' => null,
+            'instagram_url' => '@pousadaifto',
             'address' => 'Avenida Teotônio Segurado, Palmas',
         ]);
 
@@ -115,10 +116,14 @@ class PublicGuideTest extends TestCase
         $response->assertSee('40');
         $response->assertSee('R$ 80 a R$ 120');
         $response->assertSee('https://wa.me/5563984001122', false);
+        $response->assertSee('https://www.instagram.com/pousadaifto', false);
+        $response->assertSee('@pousadaifto');
         $response->assertSee(
             'https://www.google.com/maps/search/?api=1&amp;query=Avenida%20Teot%C3%B4nio%20Segurado%2C%20Palmas',
             false,
         );
+        $response->assertSee('output=embed', false);
+        $response->assertSee('https://maps.google.com/maps?q=', false);
     }
 
     public function test_establishment_details_keep_existing_google_maps_url(): void
@@ -134,6 +139,42 @@ class PublicGuideTest extends TestCase
         $response->assertOk();
         $response->assertSee('https://wa.me/5563999990000', false);
         $response->assertSee('https://maps.google.com/?q=campus-palmas', false);
+    }
+
+    public function test_guide_filters_by_subcategory_and_renders_mobility_app_store_links(): void
+    {
+        $event = $this->event();
+        $this->establishment($event, [
+            'name' => 'Paraíso das Pizzas',
+            'code' => 'PIZ-01',
+            'category' => Establishment::CATEGORY_ALIMENTACAO,
+            'subcategory' => 'Pizzaria',
+        ]);
+        $this->establishment($event, [
+            'name' => 'Popen Açaí',
+            'code' => 'ACA-01',
+            'category' => Establishment::CATEGORY_ALIMENTACAO,
+            'subcategory' => 'Açaiteria',
+        ]);
+        $this->establishment($event, [
+            'name' => 'TiFu',
+            'code' => 'APP-01',
+            'category' => Establishment::CATEGORY_TRANSPORTE,
+            'subcategory' => 'App de Mobilidade',
+            'android_app_url' => 'https://play.google.com/store/apps/details?id=br.com.tifu.app',
+            'ios_app_url' => 'https://apps.apple.com/br/app/tifu-mobilidade-urbana/id6742718105',
+        ]);
+
+        $foodResponse = $this->get('/eventos/'.$event->id.'/guia?category=alimentacao&subcategory=Pizzaria');
+        $foodResponse->assertOk();
+        $foodResponse->assertSee('Paraíso das Pizzas');
+        $foodResponse->assertDontSee('Popen Açaí');
+
+        $transportResponse = $this->get('/eventos/'.$event->id.'/guia?category=transporte');
+        $transportResponse->assertOk();
+        $transportResponse->assertSee('Google Play');
+        $transportResponse->assertSee('App Store');
+        $transportResponse->assertSee('https://play.google.com/store/apps/details?id=br.com.tifu.app', false);
     }
 
     private function event(array $overrides = []): Event

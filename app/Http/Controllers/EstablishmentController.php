@@ -93,11 +93,15 @@ class EstablishmentController extends Controller
             'address' => ['required', 'string', 'max:255'],
             'code' => ['required', 'string', 'max:255', $code],
             'category' => ['required', 'in:hospedagem,alimentacao,transporte,emergencia'],
+            'subcategory' => ['nullable', 'string', 'max:80'],
             'status' => ['required', 'in:ativo,lotado,inativo'],
             'group_capacity' => ['required', 'integer', 'min:1'],
             'price_range' => ['nullable', 'string', 'max:255'],
             'phone_whatsapp' => ['nullable', 'string', 'max:30'],
             'maps_url' => ['nullable', 'url', 'max:2048'],
+            'instagram_url' => ['nullable', 'string', 'max:255'],
+            'android_app_url' => ['nullable', 'url', 'max:2048'],
+            'ios_app_url' => ['nullable', 'url', 'max:2048'],
         ], [
             'group_capacity.min' => 'A capacidade do grupo deve ser um inteiro positivo.',
             'code.unique' => 'Este código já está em uso.',
@@ -107,11 +111,15 @@ class EstablishmentController extends Controller
             'address' => 'endereço',
             'code' => 'código',
             'category' => 'categoria',
+            'subcategory' => 'subcategoria',
             'status' => 'situação',
             'group_capacity' => 'capacidade do grupo',
             'price_range' => 'faixa de preço',
             'phone_whatsapp' => 'WhatsApp',
             'maps_url' => 'link do Google Maps',
+            'instagram_url' => 'Instagram',
+            'android_app_url' => 'link do Google Play',
+            'ios_app_url' => 'link da App Store',
         ]);
     }
 

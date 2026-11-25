@@ -51,6 +51,12 @@
 
         <footer class="site-footer">
             <p>Rota IFTO · Guia do participante</p>
+            <p>
+                Dúvidas? IFTO Campus Paraíso do Tocantins ·
+                <a href="tel:+556333610331" class="text-link">(63) 3361-0331</a> ·
+                <a href="mailto:paraiso@ifto.edu.br" class="text-link">paraiso@ifto.edu.br</a> ·
+                <a href="https://www.ifto.edu.br/paraiso" class="text-link" target="_blank" rel="noopener noreferrer">ifto.edu.br/paraiso</a>
+            </p>
         </footer>
     </body>
 </html>

@@ -44,6 +44,16 @@
             @error('category') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
         </div>
         <div class="mb-4">
+            <label class="block font-medium mb-1">Subcategoria / Tipo (opcional)</label>
+            <input type="text" name="subcategory" list="subcategory-options" placeholder="Ex.: Hamburgueria, Pizzaria, Restaurantes, Açaiteria, Sorveteria, Farmácia..." value="{{ old('subcategory', $establishment->subcategory ?? '') }}" class="w-full rounded border px-3 py-2">
+            <datalist id="subcategory-options">
+                @foreach (\App\Models\Establishment::subcategorySuggestions() as $suggestion)
+                    <option value="{{ $suggestion }}"></option>
+                @endforeach
+            </datalist>
+            @error('subcategory') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+        </div>
+        <div class="mb-4">
             <label class="block font-medium mb-1">Situação</label>
             <select name="status" class="w-full rounded border px-3 py-2">
                 @foreach (\App\Models\Establishment::statusOptions() as $value => $label)
@@ -76,6 +86,21 @@
             <label class="block font-medium mb-1">Link do Google Maps</label>
             <input type="url" name="maps_url" value="{{ old('maps_url', $establishment->maps_url ?? '') }}" class="w-full rounded border px-3 py-2">
             @error('maps_url') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+        </div>
+        <div class="mb-4">
+            <label class="block font-medium mb-1">Instagram (opcional)</label>
+            <input type="text" name="instagram_url" placeholder="@perfil ou https://instagram.com/perfil" value="{{ old('instagram_url', $establishment->instagram_url ?? '') }}" class="w-full rounded border px-3 py-2">
+            @error('instagram_url') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+        </div>
+        <div class="mb-4">
+            <label class="block font-medium mb-1">Link Google Play — Android (opcional, para apps de transporte)</label>
+            <input type="url" name="android_app_url" value="{{ old('android_app_url', $establishment->android_app_url ?? '') }}" class="w-full rounded border px-3 py-2">
+            @error('android_app_url') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+        </div>
+        <div class="mb-4">
+            <label class="block font-medium mb-1">Link App Store — iOS (opcional, para apps de transporte)</label>
+            <input type="url" name="ios_app_url" value="{{ old('ios_app_url', $establishment->ios_app_url ?? '') }}" class="w-full rounded border px-3 py-2">
+            @error('ios_app_url') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
         </div>
         <button type="submit" class="button">Atualizar</button>
     </form>

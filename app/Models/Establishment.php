@@ -48,10 +48,14 @@ class Establishment extends Model
         'name',
         'code',
         'category',
+        'subcategory',
         'group_capacity',
         'price_range',
         'phone_whatsapp',
         'maps_url',
+        'instagram_url',
+        'android_app_url',
+        'ios_app_url',
         'address',
         'status',
     ];
@@ -130,5 +134,105 @@ class Establishment extends Model
         }
 
         return 'https://www.google.com/maps/search/?api=1&query='.rawurlencode((string) $this->address);
+    }
+
+    public function googleMapsEmbedUrl(): string
+    {
+        $city = $this->relationLoaded('event') ? trim((string) $this->event?->city) : '';
+        $address = trim((string) $this->address);
+
+        if (is_string($this->maps_url) && $this->maps_url !== '') {
+            $queryString = (string) parse_url($this->maps_url, PHP_URL_QUERY);
+            parse_str($queryString, $params);
+            $directQuery = $params['query'] ?? $params['q'] ?? null;
+
+            if (is_string($directQuery) && trim($directQuery) !== '') {
+                return 'https://maps.google.com/maps?q='.rawurlencode(trim($directQuery)).'&hl=pt-BR&z=17&output=embed';
+            }
+        }
+
+        if (preg_match('/\A([23456789CFGHJMPQRVWX]{4,8}\+[23456789CFGHJMPQRVWX]{2,3})\b/i', $address, $matches) === 1) {
+            $plusQuery = trim($matches[1].' '.($city !== '' ? $city : 'Paraíso do Tocantins - TO'));
+
+            return 'https://maps.google.com/maps?q='.rawurlencode($plusQuery).'&hl=pt-BR&z=17&output=embed';
+        }
+
+        $cleanName = trim((string) preg_replace('/\s*(?:—|-)\s*Loja\s*\d+.*|\s*\([^)]*\)/iu', '', (string) $this->name));
+        $parts = array_filter([
+            $cleanName,
+            $address,
+        ]);
+
+        $joined = implode(', ', $parts);
+
+        if ($city !== '' && stripos($joined, $city) === false) {
+            $joined = $joined !== '' ? $joined.', '.$city : $city;
+        }
+
+        return 'https://maps.google.com/maps?q='.rawurlencode($joined).'&hl=pt-BR&z=16&output=embed';
+    }
+
+    public function instagramUrl(): ?string
+    {
+        $raw = trim((string) $this->instagram_url);
+
+        if ($raw === '') {
+            return null;
+        }
+
+        if (preg_match('#\Ahttps?://#i', $raw) === 1) {
+            return $raw;
+        }
+
+        $handle = ltrim($raw, '@/');
+        $handle = preg_replace('/[^A-Za-z0-9._]/', '', $handle) ?? '';
+
+        if ($handle === '') {
+            return null;
+        }
+
+        return 'https://www.instagram.com/'.$handle;
+    }
+
+    public function instagramHandle(): ?string
+    {
+        $url = $this->instagramUrl();
+
+        if ($url === null) {
+            return null;
+        }
+
+        $path = trim((string) parse_url($url, PHP_URL_PATH), '/');
+        $segment = explode('/', $path)[0] ?? '';
+
+        return $segment !== '' ? '@'.$segment : null;
+    }
+
+    public function isMobilityApp(): bool
+    {
+        return filled($this->android_app_url) || filled($this->ios_app_url);
+    }
+
+    /**
+     * @return list<string>
+     */
+    public static function subcategorySuggestions(): array
+    {
+        return [
+            'Restaurantes',
+            'Pizzaria',
+            'Hamburgueria',
+            'Açaiteria',
+            'Sorveteria',
+            'Hotel',
+            'Pousada',
+            'App de Mobilidade',
+            'Táxi',
+            'Mototáxi',
+            'Terminal Rodoviário',
+            'Hospital 24h',
+            'Unidade de Saúde',
+            'Farmácia',
+        ];
     }
 }

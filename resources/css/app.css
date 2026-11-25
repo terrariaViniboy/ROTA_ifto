@@ -708,6 +708,32 @@ svg {
     margin-top: var(--space-md);
 }
 
+.map-embed {
+    width: 100%;
+    overflow: hidden;
+    border: 1px solid var(--color-border, #d8e2dc);
+    border-radius: var(--radius-card, 0.75rem);
+    background: var(--color-surface-muted, #f3f6f4);
+}
+
+.map-embed iframe {
+    display: block;
+    width: 100%;
+    border: 0;
+}
+
+.map-embed--card iframe {
+    height: 11rem;
+}
+
+.map-embed--detail {
+    margin-top: var(--space-md);
+}
+
+.map-embed--detail iframe {
+    height: 18rem;
+}
+
 @media (min-width: 48rem) {
     .site-header-inner {
         flex-direction: row;
