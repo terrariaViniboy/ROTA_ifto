@@ -22,3 +22,6 @@
 Homestead.json
 Homestead.yaml
 Thumbs.db
+
+# Gerador e documentos de especificação locais (não versionar)
+/documento-local/
